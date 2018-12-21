@@ -14,7 +14,7 @@ public class ArrayUtilTest {
   @Before
   public void before() {
     Random random = new Random();
-    data = IntStream.range(0, 20).mapToObj(l -> random.nextInt(100))
+    data = IntStream.range(0, 10).mapToObj(l -> random.nextInt(100))
         .mapToInt(l -> Integer.valueOf(l)).toArray();
     printArray();
   }
@@ -39,7 +39,12 @@ public class ArrayUtilTest {
   public void testInsertSort(){
    data = ArrayUtil.insertSort(data);
   }
-
+  
+  @Test
+  public void testShellSort(){
+   ArrayUtil.shellSort(data);
+  }
+  
   protected void printArray() {
     if (data != null) {
       StringBuilder sb = new StringBuilder();

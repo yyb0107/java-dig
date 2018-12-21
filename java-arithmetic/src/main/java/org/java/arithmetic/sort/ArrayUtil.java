@@ -63,4 +63,29 @@ public class ArrayUtil {
     }
     return result;
   }
+
+  /**
+   * shell 希尔排序  不知道为什么要出现这种排序
+   * 
+   * 最后一层for循环可以将array[j] > current放置for结构中，可以少一层else语句块
+   * 
+   * @param array
+   */
+  public static void shellSort(int[] array) {
+    int gap = array.length / 2;
+    int j = 0, current = 0;
+    for (; gap > 0; gap /= 2) {
+      for (int i = gap; i < array.length; i++) {
+        current = array[i];
+        for (j = i - gap; j >= 0; j -= gap) {
+          if (array[j] > current) {
+            array[j + gap] = array[j];
+          } else {
+            break;
+          }
+        }
+        array[j + gap] = current;
+      }
+    }
+  }
 }
