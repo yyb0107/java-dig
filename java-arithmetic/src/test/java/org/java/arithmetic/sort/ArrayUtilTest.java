@@ -29,22 +29,32 @@ public class ArrayUtilTest {
   public void testBubbleSort() {
     ArrayUtil.bubbleSort(data);
   }
-  
+
   @Test
-  public void testSelectSort(){
+  public void testSelectSort() {
     ArrayUtil.bubbleSort(data);
   }
-  
+
   @Test
-  public void testInsertSort(){
-   data = ArrayUtil.insertSort(data);
+  public void testInsertSort() {
+    data = ArrayUtil.insertSort(data);
+  }
+
+  @Test
+  public void testShellSort() {
+    ArrayUtil.shellSort(data);
+  }
+
+  @Test
+  public void testMerge(){
+    data= ArrayUtil.merge(new int[]{2,6,1,1},new int[]{8,1,4});
   }
   
   @Test
-  public void testShellSort(){
-   ArrayUtil.shellSort(data);
+  public void testMergeSort(){
+    data= ArrayUtil.mergeSort(data);
   }
-  
+
   protected void printArray() {
     if (data != null) {
       StringBuilder sb = new StringBuilder();

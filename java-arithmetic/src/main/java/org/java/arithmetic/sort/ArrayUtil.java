@@ -1,5 +1,7 @@
 package org.java.arithmetic.sort;
 
+import java.util.Arrays;
+
 public class ArrayUtil {
   /**
    * 冒泡排序
@@ -65,7 +67,7 @@ public class ArrayUtil {
   }
 
   /**
-   * shell 希尔排序  不知道为什么要出现这种排序
+   * shell 希尔排序 不知道为什么要出现这种排序
    * 
    * 最后一层for循环可以将array[j] > current放置for结构中，可以少一层else语句块
    * 
@@ -88,4 +90,38 @@ public class ArrayUtil {
       }
     }
   }
+
+  public static int[] mergeSort(int[] array) {
+    int[] result = null;
+    int len = array.length;
+    if (len <= 1) {
+      return array;
+    }
+    int mid = len / 2;
+    int[] left = Arrays.copyOfRange(array, 0, mid);
+    int[] right = Arrays.copyOfRange(array, mid, len);
+    result = merge(mergeSort(left), mergeSort(right));
+    return result;
+  }
+
+  protected static int[] merge(int[] left, int[] right) {
+    int[] result = new int[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+    for (; i < left.length && j < right.length;) {
+      if (left[i] < right[j]) {
+        result[k++] = left[i++];
+      } else {
+        result[k++] = right[j++];
+      }
+    }
+    while (k < result.length) {
+      if(i<left.length){
+        result[k++] = left[i++];
+      }else{
+        result[k++] = right[j++];
+      }
+    }
+    return result;
+  }
+  
 }
