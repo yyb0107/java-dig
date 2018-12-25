@@ -46,13 +46,18 @@ public class ArrayUtilTest {
   }
 
   @Test
-  public void testMerge(){
-    data= ArrayUtil.merge(new int[]{2,6,1,1},new int[]{8,1,4});
+  public void testMerge() {
+    data = ArrayUtil.merge(new int[] {2, 6, 1, 1}, new int[] {8, 1, 4});
   }
-  
+
   @Test
-  public void testMergeSort(){
-    data= ArrayUtil.mergeSort(data);
+  public void testMergeSort() {
+    data = ArrayUtil.mergeSort(data);
+  }
+
+  @Test
+  public void testQuickSort() {
+    ArrayUtil.quickSort(data, 0, data.length);
   }
 
   protected void printArray() {

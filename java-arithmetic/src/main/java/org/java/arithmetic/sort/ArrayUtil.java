@@ -1,7 +1,9 @@
 package org.java.arithmetic.sort;
 
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ArrayUtil {
   /**
    * 冒泡排序
@@ -115,13 +117,53 @@ public class ArrayUtil {
       }
     }
     while (k < result.length) {
-      if(i<left.length){
+      if (i < left.length) {
         result[k++] = left[i++];
-      }else{
+      } else {
         result[k++] = right[j++];
       }
     }
     return result;
   }
-  
+
+  public static void quickSort(int[] array, int start, int end) {
+    int i = start, index = 0;
+    int base = array[i];
+    for (int j = i + 1; j < end; j++) {
+      if (array[j] < base) {
+        index++;
+        // swap
+        if (j != index + i) {
+          int temp = array[j];
+          array[j] = array[index + i];
+          array[index + i] = temp;
+        }
+      }
+    }
+    // swap
+    array[i] = array[i + index];
+    array[i + index] = base;
+    log.debug(
+        String.format("start %s end %s index %s\t %s", start, end, index, arrayToString(array)));
+    if (index == 0) {
+      index++;
+    }
+    if (end - start > 1) {
+      if (index > 0) {
+        quickSort(array, start, start + index);
+        quickSort(array, start + index, end);
+      }
+    }
+  }
+
+  protected static String arrayToString(int[] data) {
+    if (data != null) {
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < data.length; i++) {
+        sb.append(data[i] + " ");
+      }
+      return sb.toString();
+    }
+    return null;
+  }
 }
