@@ -145,15 +145,112 @@ public class ArrayUtil {
     array[i + index] = base;
     log.debug(
         String.format("start %s end %s index %s\t %s", start, end, index, arrayToString(array)));
-    if (index == 0) {
-      index++;
-    }
+    // if (index == 0) {
+    // index++;
+    // }
     if (end - start > 1) {
       if (index > 0) {
         quickSort(array, start, start + index);
         quickSort(array, start + index, end);
+      } else if (index == 0) {
+        quickSort(array, start + 1, end);
       }
     }
+  }
+
+  /**
+   * 构建大顶堆
+   * 
+   * @param data
+   */
+  public static void buildMaxHeap(int[] data) {
+    buildMaxHeap(data, data.length);
+  }
+
+  /**
+   * 构建data前len个元素基础上的大顶堆
+   * 
+   * @param data
+   * @param len
+   */
+  private static void buildMaxHeap(int[] data, int len) {
+    for (int i = 0; i < len; i++) {
+      int j = i;
+      while (data[parent(j)] < data[j]) {
+        int temp = data[j];
+        data[j] = data[parent(j)];
+        data[parent(j)] = temp;
+        j = parent(j);
+      }
+    }
+  }
+
+
+  /**
+   * 堆排序
+   * 
+   * @param data
+   */
+  public static void heapSort(int[] data) {
+    for (int i = 0; i < data.length - 1; i++) {
+      buildMaxHeap(data, data.length - i);
+      // swap
+      int temp = data[data.length - i - 1];
+      data[data.length - i - 1] = data[0];
+      data[0] = temp;
+    }
+
+  }
+
+  private static int parent(int n) {
+    return (n - 1) / 2;
+  }
+
+  // private static int left(int n) {
+  // return 2 * n + 1;
+  // }
+  //
+  // private static int right(int n) {
+  // return 2 * (n + 1);
+  // }
+
+  /**
+   * 计数排序
+   * 
+   * @param data
+   * @param min
+   * @param max
+   */
+  public static void countingSort(int[] data, int min, int max) {
+    int[] counting = new int[max - min + 1];
+    // int[] countIndex = new in
+    for (int i = 0; i < data.length; i++) {
+      counting[data[i]]++;
+    }
+    int index = 0;
+    for (int i = 0; i < counting.length; i++) {
+      while (counting[i]-- > 0) {
+        data[index++] = min + i;
+      }
+    }
+  }
+
+  /**
+   * 桶排序
+   * 
+   * @param data
+   */
+  public static void bucketSort(int[] data) {
+    // TODO
+  }
+
+  /**
+   * 基数排序
+   * 
+   * @param data
+   */
+  public static void radixSort(int[] data) {
+    // TODO
   }
 
   protected static String arrayToString(int[] data) {

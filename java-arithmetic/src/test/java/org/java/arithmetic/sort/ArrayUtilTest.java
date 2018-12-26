@@ -60,6 +60,16 @@ public class ArrayUtilTest {
     ArrayUtil.quickSort(data, 0, data.length);
   }
 
+  @Test
+  public void testHeapSort() {
+    ArrayUtil.heapSort(data);
+  }
+
+  @Test
+  public void testCountingSort() {
+    ArrayUtil.countingSort(data, 0, 100);
+  }
+
   protected void printArray() {
     if (data != null) {
       StringBuilder sb = new StringBuilder();
