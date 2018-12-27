@@ -14,7 +14,7 @@ public class ArrayUtilTest {
   @Before
   public void before() {
     Random random = new Random();
-    data = IntStream.range(0, 10).mapToObj(l -> random.nextInt(100))
+    data = IntStream.range(0, 30).mapToObj(l -> random.nextInt(100))
         .mapToInt(l -> Integer.valueOf(l)).toArray();
     printArray();
   }
@@ -68,6 +68,11 @@ public class ArrayUtilTest {
   @Test
   public void testCountingSort() {
     ArrayUtil.countingSort(data, 0, 100);
+  }
+
+  @Test
+  public void testRadixSort() {
+    ArrayUtil.radixSort(data, 2);
   }
 
   protected void printArray() {

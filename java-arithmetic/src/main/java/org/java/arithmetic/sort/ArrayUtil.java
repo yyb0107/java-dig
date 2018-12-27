@@ -249,8 +249,36 @@ public class ArrayUtil {
    * 
    * @param data
    */
-  public static void radixSort(int[] data) {
-    // TODO
+  public static void radixSort(int[] data, int width) {
+    int[][] dataStore = new int[10][data.length * 2 / 3];
+    int[] arrayIndex = null;
+    int index = 0;
+    int rs = 0;
+    while (index < width) {
+      int base = 1;
+      arrayIndex = new int[10];
+      for (int i = 0; i < index; i++) {
+        base *= 10;
+      }
+      for (int i = 0; i < data.length; i++) {
+        rs = data[i] / base;
+        while (rs > 10) {
+          rs = rs % 10;
+        }
+//        log.debug("rs {} ,base {}", rs, base);
+        dataStore[rs][arrayIndex[rs]++] = data[i];
+      }
+      int reIndex = 0;
+      // log.debug(arrayToString(arrayIndex));
+      for (int i = 0; i < dataStore.length; i++) {
+        int j = 0;
+        while (j < arrayIndex[i]) {
+          data[reIndex++] = dataStore[i][j++];
+        }
+      }
+      index++;
+    }
+    log.debug(arrayToString(dataStore));
   }
 
   protected static String arrayToString(int[] data) {
@@ -258,6 +286,22 @@ public class ArrayUtil {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < data.length; i++) {
         sb.append(data[i] + " ");
+      }
+      return sb.toString();
+    }
+    return null;
+  }
+
+
+  protected static String arrayToString(int[][] data) {
+    if (data != null) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("\n");
+      for (int i = 0; i < data.length; i++) {
+        for (int j = 0; j < data[i].length; j++) {
+          sb.append(data[i][j] + "-");
+        }
+        sb.append("\n");
       }
       return sb.toString();
     }
