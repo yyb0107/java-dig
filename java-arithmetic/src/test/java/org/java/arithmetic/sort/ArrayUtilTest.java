@@ -75,6 +75,16 @@ public class ArrayUtilTest {
     ArrayUtil.radixSort(data, 2);
   }
 
+  @Test
+  public void testFindTopN() {
+    ArrayUtil.findTopN(data, 8);
+  }
+
+  @Test
+  public void testFindTopN2() {
+    ArrayUtil.findTopN(data, 0, 10);
+  }
+
   protected void printArray() {
     if (data != null) {
       StringBuilder sb = new StringBuilder();

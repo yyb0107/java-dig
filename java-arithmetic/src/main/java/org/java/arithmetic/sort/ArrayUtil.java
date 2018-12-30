@@ -206,13 +206,13 @@ public class ArrayUtil {
     return (n - 1) / 2;
   }
 
-  // private static int left(int n) {
-  // return 2 * n + 1;
-  // }
-  //
-  // private static int right(int n) {
-  // return 2 * (n + 1);
-  // }
+  private static int left(int n) {
+    return 2 * n + 1;
+  }
+
+  private static int right(int n) {
+    return 2 * (n + 1);
+  }
 
   /**
    * 计数排序
@@ -265,7 +265,7 @@ public class ArrayUtil {
         while (rs > 10) {
           rs = rs % 10;
         }
-//        log.debug("rs {} ,base {}", rs, base);
+        // log.debug("rs {} ,base {}", rs, base);
         dataStore[rs][arrayIndex[rs]++] = data[i];
       }
       int reIndex = 0;
@@ -279,6 +279,106 @@ public class ArrayUtil {
       index++;
     }
     log.debug(arrayToString(dataStore));
+  }
+
+  /**
+   * 查找数组中前N大的元素
+   * 
+   * @param data
+   * @param n
+   */
+  public static void findTopN(int[] data, int n) {
+    buildTopN(data, n);
+    if (n < data.length) {
+      rebuildTopN(data, n);
+    }
+  }
+
+  /**
+   * build a min heap for n elements of data
+   * 
+   * @param data
+   * @param n
+   */
+  private static void buildTopN(int[] data, int n) {
+    int temp = 0;
+    for (int i = 0; i < n; i++) {
+      int j = i;
+      while (data[parent(j)] > data[j]) {
+        temp = data[j];
+        data[j] = data[parent(j)];
+        data[parent(j)] = temp;
+      }
+    }
+  }
+
+  /**
+   * rebuild min heap for elements index > n push to current min heap
+   * 
+   * @param data
+   * @param n
+   */
+  private static void rebuildTopN(int[] data, int n) {
+    for (int i = n; i < data.length; i++) {
+      if (data[0] > data[i]) {
+        continue;
+      }
+      // swap
+      int parent = 0;
+      int temp = data[i];
+      data[i] = data[parent];
+      data[parent] = temp;
+      // rebuild top N
+      while ((left(parent) < n && data[left(parent)] < data[parent])
+          || (right(parent) < n && data[right(parent)] < data[parent])) {
+        if (data[left(parent)] < data[right(parent)] && left(parent) < n) {
+          temp = data[parent];
+          data[parent] = data[left(parent)];
+          data[left(parent)] = temp;
+          parent = left(parent);
+        } else {
+          temp = data[parent];
+          data[parent] = data[right(parent)];
+          data[right(parent)] = temp;
+          parent = right(parent);
+        }
+      }
+    }
+  }
+
+  /**
+   * 查找数组中前N大的元素,类似快速排序中欧对n的选择
+   * 
+   * @param data
+   * @param start
+   * @param n
+   */
+  public static void findTopN(int[] data, int start, int n) {
+    int i = 0;
+    for (; i < n; i++) {
+      int index = 0;
+      int current = data[i];
+      for (int j = i + 1; j < data.length; j++) {
+        if (data[j] > current) {
+          index++;
+          if (index + i != j) {
+            int temp = data[index + i];
+            data[index + i] = data[j];
+            data[j] = temp;
+          }
+        }
+      }
+      data[i] = data[i + index];
+      data[i + index] = current;
+
+      if (i + index + 1 > n) {
+        i = 0;
+      } else if (i + index + 1 < n) {
+        i = i + index;
+      } else {
+        break;
+      }
+    }
   }
 
   protected static String arrayToString(int[] data) {
