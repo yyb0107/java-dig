@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -39,35 +40,51 @@ public class Server {
     }
   }
 
-  private void accpet(Selector selector) throws IOException {
+  private void accpet(Selector selector) {
+    Iterator<SelectionKey> it = null;
+    SocketChannel clientChannel = null;
     while (running) {
-      selector.select();
-      Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-      ByteBuffer buf = ByteBuffer.allocate(1024);
-      while (it.hasNext()) {
-        SelectionKey key = it.next();
-        log.debug("key info [key.isValid:{},]", key.isValid());
-        if (key.isAcceptable()) {
-          ServerSocketChannel channel = (ServerSocketChannel) key.channel();
-          SocketChannel clientChannel = channel.accept();
-          log.debug("clientChannel {}", clientChannel);
-          clientChannel.configureBlocking(false);
-          clientChannel.register(selector, SelectionKey.OP_READ);
-        } else if (key.isReadable()) {
-          SocketChannel clientChannel = (SocketChannel) key.channel();
-          int len = clientChannel.read(buf);
-          String line = new String(buf.array(), 0, len);
-          log.debug("the line send from client {}", line);
-          buf.flip();
-          clientChannel.write(buf);
-          buf.clear();
-        } else if (key.isWritable()) {
-          // TODO
-          log.info("current key is writable...");
+      try {
+        selector.select();
+        it = selector.selectedKeys().iterator();
+        ByteBuffer buf = ByteBuffer.allocate(1024);
+        while (it.hasNext()) {
+          SelectionKey key = it.next();
+          // remove form the iterator
+          it.remove();
+          log.debug("key info [key.isValid:{},]", key.isValid());
+          if (key.isAcceptable()) {
+            ServerSocketChannel channel = (ServerSocketChannel) key.channel();
+            clientChannel = channel.accept();
+            log.debug("clientChannel {}", clientChannel);
+            clientChannel.configureBlocking(false);
+            clientChannel.register(selector, SelectionKey.OP_READ);
+          } else if (key.isReadable()) {
+            clientChannel = (SocketChannel) key.channel();
+            buf.clear();
+            int len = clientChannel.read(buf);
+            if (len != -1) {
+              String line = new String(buf.array(), 0, len);
+              log.debug("the line send from client {}", line);
+              buf.flip();
+              clientChannel.write(buf);
+              buf.clear();
+            }
+            // clientChannel.close();
+          } else if (key.isWritable()) {
+            // TODO
+            log.info("current key is writable...");
+          }
         }
-        
-     // remove form the iterator
-        it.remove();
+      } catch (ClosedChannelException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        try {
+          clientChannel.close();
+        } catch (IOException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
       }
     }
   }
