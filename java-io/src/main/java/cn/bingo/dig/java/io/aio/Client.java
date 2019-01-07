@@ -37,8 +37,11 @@ public class Client {
           if (key.isValid()) {
             if (key.isWritable()) {
               SocketChannel channel = (SocketChannel) key.channel();
+              String line = null;
               for (int i = 0; i < 6; i++) {
-                channel.write(ByteBuffer.wrap(new String("Hello World " + i).getBytes()));
+                line = new String("Hello World " + i);
+                log.debug("{}", line);
+                channel.write(ByteBuffer.wrap(line.getBytes()));
               }
               log.debug("client send msg succeed!");
               channel.register(selector, SelectionKey.OP_READ);

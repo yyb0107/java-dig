@@ -21,5 +21,3 @@ group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 ```
 
 You can tune how threads are handled, see the AsynchronousChannelGroup API docs for more information.
-
-![Image of Text](./images/asynchronousCloseException.png)
