@@ -22,22 +22,18 @@ public class Server {
       this.serverChannel = serverChannel;
       InetSocketAddress address = new InetSocketAddress(PORT);
       this.serverChannel.bind(address, 100);
+      log.debug("this.serverChannel.isOpen() {}", this.serverChannel.isOpen());
       this.serverChannel.accept(this, new AcceptHandler());
       log.debug("Server started up... port[{}]", PORT);
-      Thread t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          while (true) {
-            // System.out.println("运行中...");
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
-          }
+      // to avoid progress terminate after call serverChannel.accept()
+      while (true) {
+        try {
+          // log.debug("the main thread[{}] is sleeping",Thread.currentThread().getName());
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
         }
-      });
-      t.start();
+      }
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -61,15 +57,17 @@ public class Server {
 class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, Server> {
   @Override
   public void completed(AsynchronousSocketChannel socketChannel, Server server) {
-    // super.completed(socketChannel, server);
     try {
-//      ByteBuffer dst = ByteBuffer.allocate(1024);
-//      Future<Integer> future = socketChannel.read(dst);
-//      int len = future.get();
-//      dst.flip();
-//      log.debug("read len: {}", len);
-//      String request = new String(dst.array(), 0, len);
-      log.debug("String from client {}", server);
+      ByteBuffer dst = ByteBuffer.allocate(1024);
+      Future<Integer> future = socketChannel.read(dst);
+      int len = future.get();
+      dst.flip();
+      log.debug("read len: {}", len);
+      String request = new String(dst.array(), 0, len);
+      log.debug("String from client {}", request);
+    } catch (InterruptedException | ExecutionException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     } finally {
       server.getServerChannel().accept(server, this);
     }
@@ -86,7 +84,7 @@ class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, Serv
       // TODO Auto-generated catch block
       e.printStackTrace();
     } finally {
-//      server.getServerChannel().accept(server, this);
+      // server.getServerChannel().accept(server, this);
     }
   }
 }
