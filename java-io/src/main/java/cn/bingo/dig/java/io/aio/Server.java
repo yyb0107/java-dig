@@ -25,6 +25,7 @@ public class Server {
       InetSocketAddress address = new InetSocketAddress(PORT);
       this.serverChannel.bind(address, 100);
       log.debug("this.serverChannel.isOpen() {}", this.serverChannel.isOpen());
+      // this.serverChannel.accept(this, new AcceptFuture());
       this.serverChannel.accept(this, new AcceptHandler());
       log.debug("Server started up... port[{}]", PORT);
       // to avoid progress terminate after call serverChannel.accept()
@@ -50,53 +51,7 @@ public class Server {
   public static void main(String[] args) {
     Server server = new Server();
     server.start();
-
   }
 }
 
 
-@Slf4j
-class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, Server> {
-  @Override
-  public void completed(AsynchronousSocketChannel socketChannel, Server server) {
-    try {
-      ByteBuffer dst = ByteBuffer.allocate(1024);
-      Future<Integer> future = null;
-      int len = -1;
-      while (true) {
-        dst.clear();
-        future = socketChannel.read(dst);
-        len = future.get(1000, TimeUnit.MILLISECONDS);
-        if (len == -1) {
-          break;
-        }
-        dst.flip();
-        log.debug("read len: {}", len);
-        String request = new String(dst.array(), 0, len);
-        log.debug("String from client {}", request);
-      }
-    } catch (InterruptedException | ExecutionException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (TimeoutException e) {
-      log.error("future.get() timeout...");
-    } finally {
-      server.getServerChannel().accept(server, this);
-    }
-  }
-
-  @Override
-  public void failed(Throwable exception, Server server) {
-    // TODO Auto-generated method stub
-    try {
-      log.error("failed... ");
-      exception.printStackTrace();
-      log.error("{}", server.getServerChannel());
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      // server.getServerChannel().accept(server, this);
-    }
-  }
-}
