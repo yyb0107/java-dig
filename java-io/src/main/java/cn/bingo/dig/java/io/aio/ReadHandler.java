@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReadHandler implements CompletionHandler<Integer, AsynchronousSocketChannel> {
   private ByteBuffer buf;
+  private String line;
 
   public ReadHandler(ByteBuffer buf) {
     super();
@@ -18,9 +19,17 @@ public class ReadHandler implements CompletionHandler<Integer, AsynchronousSocke
   public void completed(Integer result, AsynchronousSocketChannel socketChannel) {
     // TODO Auto-generated method stub
     buf.flip();
-    log.debug("result={},string={}", result, new String(buf.array(), 0, result));
+    line = new String(buf.array(), 0, result);
+    log.debug("result={},string={}", result, line);
     buf.clear();
-    socketChannel.read(buf, socketChannel, this);
+    log.debug("Thread-ID[{}]", Thread.currentThread().getId());
+    if (line.endsWith("\r")) {
+      buf.clear();
+      buf = ByteBuffer.wrap(new String("Server had received the message!").getBytes());
+      socketChannel.write(buf, socketChannel, new WriterHandler(buf));
+    } else {
+      socketChannel.read(buf, socketChannel, this);
+    }
   }
 
   @Override

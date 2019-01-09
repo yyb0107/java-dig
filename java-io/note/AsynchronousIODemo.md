@@ -21,3 +21,6 @@ group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 ```
 
 You can tune how threads are handled, see the AsynchronousChannelGroup API docs for more information.
+
+2019年1月9日23:19:03
+对于使用AsynchronousSocketChannel,client端和server端信息交互时可以设置结尾标识，以防止server端读完数据后顺畅的切换写操作来

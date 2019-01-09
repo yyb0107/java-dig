@@ -41,6 +41,9 @@ public class Client {
               for (int i = 0; i < 6; i++) {
                 line = new String("Hello World " + i);
                 log.debug("{}", line);
+                if (i == 5) {
+                  line += "\r";
+                }
                 channel.write(ByteBuffer.wrap(line.getBytes()));
               }
               log.debug("client send msg succeed!");
