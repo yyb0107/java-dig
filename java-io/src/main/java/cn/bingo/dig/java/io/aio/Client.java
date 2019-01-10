@@ -3,10 +3,9 @@ package cn.bingo.dig.java.io.aio;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.util.Iterator;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,47 +20,19 @@ public class Client {
 
   public void connect() {
     InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
-    try (SocketChannel socketChannel = SocketChannel.open();) {
+    try (AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open();) {
       socketChannel.connect(address);
       log.debug("client connected server{} succeed!", address);
-      socketChannel.configureBlocking(false);
-      Selector selector = Selector.open();
-      socketChannel.register(selector, SelectionKey.OP_WRITE);
-      while (running) {
-        selector.select();
-        Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-        ByteBuffer buf = ByteBuffer.allocate(1024);
-        while (it.hasNext()) {
-          SelectionKey key = it.next();
-          it.remove();
-          if (key.isValid()) {
-            if (key.isWritable()) {
-              SocketChannel channel = (SocketChannel) key.channel();
-              String line = null;
-              for (int i = 0; i < 6; i++) {
-                line = new String("Hello World " + i);
-                log.debug("{}", line);
-                if (i == 5) {
-                  line += "\r";
-                }
-                channel.write(ByteBuffer.wrap(line.getBytes()));
-              }
-              log.debug("client send msg succeed!");
-              channel.register(selector, SelectionKey.OP_READ);
-            } else if (key.isReadable()) {
-              buf.clear();
-              SocketChannel channel = (SocketChannel) key.channel();
-              channel.read(buf);
-              buf.flip();
-              log.debug("response from server {}", new String(buf.array()));
-              // channel.close();
-              // channel.register(selector, SelectionKey.OP_WRITE);
-            }
-          }
-        }
-      }
+      ByteBuffer buf = ByteBuffer.allocate(1024);
+      socketChannel.write(buf, socketChannel, new ClientWriteHandler());
+      buf.clear();
+      Future<Integer> future = socketChannel.read(buf);
+      log.debug("future.get() = ", future.get());
     } catch (IOException e) {
-      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (ExecutionException e) {
       e.printStackTrace();
     }
 

@@ -17,7 +17,11 @@ public class ReadHandler implements CompletionHandler<Integer, AsynchronousSocke
 
   @Override
   public void completed(Integer result, AsynchronousSocketChannel socketChannel) {
-    // TODO Auto-generated method stub
+    if (result < 0) {
+      // client is shutdown
+      log.debug("socketChannel.isOpen() = ", socketChannel.isOpen());
+      return;
+    }
     buf.flip();
     line = new String(buf.array(), 0, result);
     log.debug("result={},string={}", result, line);
