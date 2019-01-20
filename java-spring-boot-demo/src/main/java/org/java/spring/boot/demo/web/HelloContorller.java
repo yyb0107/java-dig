@@ -1,18 +1,18 @@
-package org.java.spring.boot.demo;
+package org.java.spring.boot.demo.web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/hello")
+ @RequestMapping("/bingo")
 @Slf4j
 public class HelloContorller {
-  @RequestMapping("/test1")
-  @ResponseBody
-  public String HelloWorld() {
+  @RequestMapping("hello")
+  public String HelloWorld(Model model) {
     log.debug("run here....");
-    return "Hello wrold!";
+    model.addAttribute("name", "Hello");
+    return "login";
   }
 }

@@ -1,4 +1,6 @@
 spring:
   main:
     banner-mode: 'OFF'
+  mvc:
+    static-path-pattern: /kkk/WEB-INF/**
     
