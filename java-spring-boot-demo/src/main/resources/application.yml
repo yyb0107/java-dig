@@ -1,4 +1,5 @@
 spring:
   main:
     banner-mode: 'OFF'
-    
+  mvc:
+    static-path-pattern: /resources/web/**
