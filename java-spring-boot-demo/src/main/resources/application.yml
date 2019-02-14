@@ -2,8 +2,8 @@ spring:
   main:
     banner-mode: 'OFF'
   mvc:
-#    view:
-#      prefix: '/WEB-INF/'
-#      suffix: '.html'
-    static-path-pattern: /kkk/WEB-INF/**
+    view:
+      prefix: '/WEB-INF/'
+      suffix: '.html'
+    static-path-pattern: /resources/**
     
