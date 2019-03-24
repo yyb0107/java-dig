@@ -48,3 +48,5 @@ AsynchronousSocketChannel 与  SocketChannel 的区别在于
 AsynchronousSocketChannel | SocketChannel 
 ----|----
 异步 可以非阻塞也可以阻塞|非阻塞
+
+![Image of Text](./images/asynchronousCloseException.png)
