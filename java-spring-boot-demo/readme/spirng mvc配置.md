@@ -1,7 +1,7 @@
 ### spring mvc 配置  (annotation方式)
 ---
  ###### 默认配置从哪里来
-`spring-boot-autoconfigure-2.0.3.RELEASE.jar`里面的`WebMvcAutoConfiguration.class`和`WebMvcProperties`，这些值都可以在application.yml配置文件定义
+`spring-boot-autoconfigure-2.0.3.RELEASE.jar`(对应的spring mvc的版本可能是5.0.7.RELEASE)里面的`WebMvcAutoConfiguration.class`和`WebMvcProperties`，这些值都可以在application.yml配置文件定义
 
 如果项目没有显示`@EnableWebMvc`,那springboot默认加载WebMvcAutoConfiguration类
 
